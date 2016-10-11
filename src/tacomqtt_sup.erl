@@ -3,7 +3,7 @@
 %% @end
 %%%-------------------------------------------------------------------
 
--module(tacobroker_sup).
+-module(tacomqtt_sup).
 
 -behaviour(supervisor).
 

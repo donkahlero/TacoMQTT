@@ -1,8 +1,8 @@
-{application, tacobroker,
+{application, tacomqtt,
  [{description, "An OTP application"},
   {vsn, "0.1.0"},
   {registered, []},
-  {mod, { tacobroker_app, []}},
+  {mod, { tacomqtt_app, []}},
   {applications,
    [kernel,
     stdlib

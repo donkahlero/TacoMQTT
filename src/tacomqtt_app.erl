@@ -3,7 +3,7 @@
 %% @end
 %%%-------------------------------------------------------------------
 
--module(tacobroker_app).
+-module(tacomqtt_app).
 
 -behaviour(application).
 
@@ -19,7 +19,7 @@ start() ->
 
 start(_StartType, _StartArgs) ->
     http_srv:start(),
-    tacobroker_sup:start_link().
+    tacomqtt_sup:start_link().
 
 %%--------------------------------------------------------------------
 stop(_State) ->
