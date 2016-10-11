@@ -51,7 +51,7 @@ handle_cast(_Msg, State) ->
 
 %% Publish Messages
 handle_info({publish, Topic, Msg}, State = #state{mqttc = C, seq = I}) ->
-    emqttc:publish(C, binary:list_to_bin(Topic), binary:list_to_bin(Msg), [{qos, 1}]),
+    emqttc:publish(C, Topic, Msg, [{qos, 1}]),
     {noreply, State#state{seq = I+1}};
 
 %% Receive Messages

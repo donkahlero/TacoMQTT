@@ -5,7 +5,11 @@
   {mod, { tacomqtt_app, []}},
   {applications,
    [kernel,
-    stdlib
+    stdlib,
+    sasl,
+    cowlib,
+    ranch,
+    cowboy
    ]},
   {env,[]},
   {modules, []},
