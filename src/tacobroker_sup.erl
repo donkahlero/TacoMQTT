@@ -28,7 +28,8 @@ start_link() ->
 
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
-    {ok, { {one_for_all, 0, 1}, []} }.
+    MsgServ = {emqtcc_srv, {emqtcc_srv, start_link, []}, permanent, 10000, worker, [emqtcc_srv]},
+    {ok, { {one_for_one, 0, 1}, [MsgServ]} }.
 
 %%====================================================================
 %% Internal functions
