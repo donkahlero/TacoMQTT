@@ -1,4 +1,4 @@
-tacobroker
+TacoMQTT
 =====
 
 This is an example repository containing an Erlang application capable of
