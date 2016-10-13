@@ -9,7 +9,7 @@ This is an example repository containing an Erlang application capable of
 This tutorial assumes that you have followed Michal's initial tutorial, as described [here](https://gist.github.com/michalpalka/128d055223c043226969968ba6889b6b)!
 
 After running
-```shell
+```zsh
 ./rebar3 update
 ./rebar3 upgrade
 ./rebar3 compile
@@ -61,7 +61,7 @@ jonas@TacoPad test $ tree
 
 ## Dependencies
 First of all, we need to add the dependencies to our rebar3 config file. In our case this is emqtcc and cowboy. Their subsequent dependencies will be fetched automatically, so we don't have to worry about them. To do so, we have to modify the rebar.config file and change the dependency list so that it looks like this:
-```rebar.config
+```erlang
 {deps, [
 	{cowboy, ".*", {git,"https://github.com/ninenines/cowboy.git", "master"}},
 	{emqttc, ".*", {git, "https://github.com/emqtt/emqttc.git", "master"}}
@@ -87,7 +87,7 @@ So far so good. But how will you make them run with a rebar app?
 
 For our application to run, we need to start cowboy and it's dependecies first. Because Cowboy is an OTP-application itself, we can add it ot our [tacomqtt.app.src](https://github.com/TacoVox/TacoMQTT/blob/master/apps/tacomqtt/src/tacomqtt.app.src) file:
 ```erlang
-...
+%% Previous code
 
 {applications,
    [kernel,
@@ -98,7 +98,7 @@ For our application to run, we need to start cowboy and it's dependecies first. 
     cowboy
    ]}
 
-...
+%% Following code
 ```
 
 Next thing we need to do is to fire up our only OTP supervisor + starting the cowboy server. That is happening in the [tacomqtt_app.erl](https://github.com/TacoVox/TacoMQTT/blob/master/apps/tacomqtt/src/tacomqtt_app.erl) file. This one will start your application (using - what a surprise - the start/2 function).
