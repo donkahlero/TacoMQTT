@@ -59,9 +59,7 @@ jonas@TacoPad test $ tree
 4 directories, 9 files
 ```
 
-## A bit of coding...
-Now it's time to hack some code together. Before you guys will bash me: I know that my code in this repo is not the prettiest :P. It's just supposed to show you how to make a simple connection between HTTP and the MQTT broker using a nice rebar3 release structure.
-
+## Dependencies
 First of all, we need to add the dependencies to our rebar3 config file. In our case this is emqtcc and cowboy. Their subsequent dependencies will be fetched automatically, so we don't have to worry about them. To do so, we have to modify the rebar.config file and change the dependency list so that it looks like this:
 ```rebar.config
 {deps, [
@@ -76,13 +74,42 @@ We can try to fetch them now and compile 'em:
 ./rebar3 upgrade
 ./rebar3 compile
 ```
-Wow - so much fun :smile:.
+Wow - so much fun :turtle:
 
-Let's start with a gen_server taking care of the messages send to your MQTT broker. I just called it [emqtcc_srv.erl](https://github.com/TacoVox/TacoMQTT/blob/master/src/emqtcc_srv.erl). It is a simplified version of an official tutorial by emqtcc. You can find that one [HERE](https://github.com/emqtt/emqttc/tree/master/examples/gen_server).
-The second important file is the [request_handler.erl](https://github.com/TacoVox/TacoMQTT/blob/master/src/request_handler.erl). That one is also a modified version of an official cowboy tutorial. This one you can fine [HERE](https://github.com/ninenines/cowboy/tree/master/examples/echo_get).
+## A bit of coding...
+Now it's time to hack some code together. All code belongs into the apps/tacomqtt/src folder. But one thing before you guys will bash me: I know that my code in this repo is not the prettiest :dog: It's just supposed to show you how to make a simple connection between HTTP and the MQTT broker using a nice rebar3 release structure.
+
+Let's start with a gen_server taking care of the messages send to your MQTT broker. I just called it [emqtcc_srv.erl](https://github.com/TacoVox/TacoMQTT/blob/master/apps/tacomqtt/src/emqtcc_srv.erl). It is a simplified version of an official tutorial by emqtcc. You can find that one [HERE](https://github.com/emqtt/emqttc/tree/master/examples/gen_server).
+The second important file is the [request_handler.erl](https://github.com/TacoVox/TacoMQTT/blob/master/apps/tacomqtt/src/request_handler.erl). That one is also a modified version of an official cowboy tutorial. This one you can fine [HERE](https://github.com/ninenines/cowboy/tree/master/examples/echo_get).
 I don't want to walk you through that code in detail. Insted you should understand their tutorial code and documentation yourselves.
 
 So far so good. But how will you make them run with a rebar app?
-Let's start by looking at the TacoMQTT_app.erl file. This one will start your application.
+Let's start by looking at the [tacomqtt_app.erl](https://github.com/TacoVox/TacoMQTT/blob/master/apps/tacomqtt/src/tacomqtt_app.erl) file. This one will start your application (using - what a surprise - the start/0 or start/2 function).
+For our application to run, we need to start cowboy and it's dependecies first. Because Cowboy is an OTP-application itself, we can do this:
+```erlang
+ok = application:start(cowlib),
+ok = application:start(ranch),
+ok = application:start(cowboy),
+```
+Next thing we need to do is to fire up our only OTP supervisor + starting the cowboy server:
+```erlang
+tacomqtt_sup:start_link(),
 
-by looking at the [tacomqtt_app.erl](https://github.com/TacoVox/TacoMQTT/blob/master/src/tacomqtt_app.erl).
+Dispatch = cowboy_router:compile([{'_', [{"/", request_handler, []}]}]),
+{ok, _} = cowboy:start_clear(http, 100, [{port, 8080}], #{env => #{dispatch => Dispatch}}).
+```
+As you can see here, we are reading out some info from a config file. We get back to that later.
+
+We should have a final look what this [tacomqtt_sup](https://github.com/TacoVox/TacoMQTT/blob/master/apps/tacomqtt/src/tacomqtt_sup.erl) is doin'.
+Basically, not much :boar:
+It is just starting the emqtcc server and taking care of it ;)
+
+I suggest you go a bit through the code and try to figure out what it is doing...
+
+## Config files
+THE FINAL PART.
+
+A thing that is really nice about rebar3 releases are the config files.
+As you can see there is currently one: config/sys.config
+
+I am using it for defining the name of the client as well as the port, where Cowboy is listenin' on :panda_face:
