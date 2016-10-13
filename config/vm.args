@@ -1,6 +1,6 @@
--sname TacoMQTT
+-sname tacomqtt
 
--setcookie TacoMQTT_cookie
+-setcookie tacomqtt_cookie
 
 +K true
 +A30
