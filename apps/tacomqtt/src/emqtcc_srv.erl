@@ -34,8 +34,10 @@ stop() ->
 %% ------------------------------------------------------------------
 
 init(_Args) ->
-    {ok, C} = emqttc:start_link([{host, "localhost"}, 
-                                 {client_id, <<"TacoMQTT">>},
+    {ok, ClientID} = application:get_env(mqtt_conf, client_id),
+    {ok, Host} = application:get_env(mqtt_conf, host),
+    {ok, C} = emqttc:start_link([{host, Host}, 
+                                 {client_id, binary:list_to_bin(ClientID)},
                                  {reconnect, 3},
                                  {logger, {console, info}}]),
     {ok, #state{mqttc = C, seq = 1}}.

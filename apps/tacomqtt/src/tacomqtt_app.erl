@@ -8,24 +8,22 @@
 -behaviour(application).
 
 %% Application callbacks
--export([start/0, start/2, stop/1]).
+-export([start/2, stop/1]).
 
 %%====================================================================
 %% API
 %%====================================================================
 
-start() ->
-    start("", "").
-
 start(_StartType, _StartArgs) ->
-    ok = application:start(cowlib),
-    ok = application:start(ranch),
-    ok = application:start(cowboy),
+    %%ok = application:start(cowlib),
+    %%ok = application:start(ranch),
+    %%ok = application:start(cowboy),
 
     tacomqtt_sup:start_link(),
 
+    {ok, Port} = application:get_env(cowboy_conf, port),
     Dispatch = cowboy_router:compile([{'_', [{"/", request_handler, []}]}]),
-    {ok, _} = cowboy:start_clear(http, 100, [{port, 8080}], #{env => #{dispatch => Dispatch}}).
+    {ok, _} = cowboy:start_clear(http, 100, [{port, Port}], #{env => #{dispatch => Dispatch}}).
 
 %%--------------------------------------------------------------------
 stop(_State) ->
