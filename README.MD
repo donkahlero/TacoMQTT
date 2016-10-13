@@ -28,7 +28,7 @@ wget https://s3.amazonaws.com/rebar3/rebar3
 chmod u+x rebar3
 ```
 So far so good.
-Now we need to create a new project in rebar3. We need a " OTP Release structure for executable programs".
+Now we need to create a new project in rebar3. We need an "OTP Release structure for executable programs".
 Therefore we will choose rebar's option "release" to create an OTP release. :smile:
 When we do that, it will create a folder "tacomqtt" inside our already existing TacoMQTT folder. That is not too handy, when it comes to handleing the code and the repo. Therefore my team and I always moved the folder structure one level lower.
 Important: your release name should be written in small letters only, if you want to avoid using single-quotes all over the place (remember Erlang atoms, etc).
