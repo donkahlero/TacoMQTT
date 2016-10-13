@@ -84,19 +84,31 @@ The second important file is the [request_handler.erl](https://github.com/TacoVo
 I don't want to walk you through that code in detail. Insted you should understand their tutorial code and documentation yourselves.
 
 So far so good. But how will you make them run with a rebar app?
-Let's start by looking at the [tacomqtt_app.erl](https://github.com/TacoVox/TacoMQTT/blob/master/apps/tacomqtt/src/tacomqtt_app.erl) file. This one will start your application (using - what a surprise - the start/0 or start/2 function).
-For our application to run, we need to start cowboy and it's dependecies first. Because Cowboy is an OTP-application itself, we can do this:
-```erlang
-ok = application:start(cowlib),
-ok = application:start(ranch),
-ok = application:start(cowboy),
-```
-Next thing we need to do is to fire up our only OTP supervisor + starting the cowboy server:
-```erlang
-tacomqtt_sup:start_link(),
 
-Dispatch = cowboy_router:compile([{'_', [{"/", request_handler, []}]}]),
-{ok, _} = cowboy:start_clear(http, 100, [{port, 8080}], #{env => #{dispatch => Dispatch}}).
+For our application to run, we need to start cowboy and it's dependecies first. Because Cowboy is an OTP-application itself, we can add it ot our [tacomqtt.app.src](https://github.com/TacoVox/TacoMQTT/blob/master/apps/tacomqtt/src/tacomqtt.app.src) file:
+```erlang
+...
+
+{applications,
+   [kernel,
+    stdlib,
+    sasl,
+    cowlib,
+    ranch,
+    cowboy
+   ]}
+
+...
+```
+
+Next thing we need to do is to fire up our only OTP supervisor + starting the cowboy server. That is happening in the [tacomqtt_app.erl](https://github.com/TacoVox/TacoMQTT/blob/master/apps/tacomqtt/src/tacomqtt_app.erl) file. This one will start your application (using - what a surprise - the start/2 function).
+```erlang
+start(_StartType, _StartArgs) ->
+    tacomqtt_sup:start_link(),
+
+    {ok, Port} = application:get_env(cowboy_conf, port),
+    Dispatch = cowboy_router:compile([{'_', [{"/", request_handler, []}]}]),
+    {ok, _} = cowboy:start_clear(http, 100, [{port, Port}], #{env => #{dispatch => Dispatch}}).
 ```
 As you can see here, we are reading out some info from a config file. We get back to that later.
 
@@ -107,9 +119,30 @@ It is just starting the emqtcc server and taking care of it ;)
 I suggest you go a bit through the code and try to figure out what it is doing...
 
 ## Config files
-THE FINAL PART.
+THE FINAL PART :bear:
 
 A thing that is really nice about rebar3 releases are the config files.
 As you can see there is currently one: config/sys.config
 
-I am using it for defining the name of the client as well as the port, where Cowboy is listenin' on :panda_face:
+I am using it for defining the name of the client, the host, as well as the port, where Cowboy is listenin' on :panda_face:
+
+```erlang
+[
+  {mqtt_conf, [{client_id, "TacoMQTT"}, {host, "localhost"}]},
+  {cowboy_conf, [{port, 8080}]}
+].
+```
+
+As you can see, first, you specify the config name. Then it's basically just a list wiht key-value-pairs.
+To access one of these pairs, just use the application:get_env/2 function and you will get back {ok, VALUE} on success:
+```erlang
+{ok, Port} = application:get_env(cowboy_conf, port).
+```
+
+## End
+That's about it :monkey:
+I hope this was helpful.
+If you want to look at our last-years project, juts have a look at the Repo:
+https://github.com/TacoVox/HashTux
+
+Cheers. Jonas.
