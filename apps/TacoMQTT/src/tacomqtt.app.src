@@ -1,11 +1,15 @@
-{application, TacoMQTT,
+{application, tacomqtt,
  [{description, "An OTP application"},
   {vsn, "0.1.0"},
   {registered, []},
-  {mod, { TacoMQTT_app, []}},
+  {mod, { tacomqtt_app, []}},
   {applications,
    [kernel,
-    stdlib
+    stdlib,
+    sasl,
+    cowlib,
+    ranch,
+    cowboy
    ]},
   {env,[]},
   {modules, []},
