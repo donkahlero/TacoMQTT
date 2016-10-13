@@ -35,7 +35,7 @@ stop() ->
 
 init(_Args) ->
     {ok, C} = emqttc:start_link([{host, "localhost"}, 
-                                 {client_id, <<"simpleClient">>},
+                                 {client_id, <<"TacoMQTT">>},
                                  {reconnect, 3},
                                  {logger, {console, info}}]),
     {ok, #state{mqttc = C, seq = 1}}.
@@ -49,15 +49,9 @@ handle_call(_Request, _From, State) ->
 handle_cast(_Msg, State) ->
     {noreply, State}.
 
-%% Publish Messages
 handle_info({publish, Topic, Msg}, State = #state{mqttc = C, seq = I}) ->
     emqttc:publish(C, Topic, Msg, [{qos, 1}]),
     {noreply, State#state{seq = I+1}};
-
-%% Receive Messages
-handle_info({publish, Topic, Payload}, State) ->
-    io:format("Message from ~s: ~p~n", [Topic, Payload]),
-    {noreply, State};
 
 %% Client connected
 handle_info({mqttc, C, connected}, State = #state{mqttc = C}) ->
