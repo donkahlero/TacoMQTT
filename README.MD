@@ -145,4 +145,6 @@ I hope this was helpful.
 If you want to look at our last-years project, juts have a look at the Repo:
 https://github.com/TacoVox/HashTux
 
+One last thing. Alway remember: DO NOT put any passwords or access tokens up to GitHub. There are even bots scanning for them! Even in privat repos. Removing them recursively is a pain in the backparts. Trust me... :see_no_evil:
+
 Cheers. Jonas.
