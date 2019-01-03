@@ -133,7 +133,7 @@ I am using it for defining the name of the client, the host, as well as the port
 ].
 ```
 
-As you can see, first, you specify the config name. Then it's basically just a list wiht key-value-pairs.
+As you can see, first, you specify the config name. Then it's basically just a list with key-value-pairs.
 To access one of these pairs, just use the application:get_env/2 function and you will get back {ok, VALUE} on success:
 ```erlang
 {ok, Port} = application:get_env(cowboy_conf, port).
@@ -142,7 +142,7 @@ To access one of these pairs, just use the application:get_env/2 function and yo
 ## End
 That's about it :monkey:
 I hope this was helpful.
-If you want to look at our last-years project, juts have a look at the Repo:
+If you want to look at our last-years project, just have a look at the Repo:
 https://github.com/TacoVox/HashTux
 
 One last thing. Alway remember: DO NOT put any passwords or access tokens up to GitHub. There are even bots scanning for them! Even in privat repos. Removing them recursively is a pain in the backparts. Trust me... :see_no_evil:
